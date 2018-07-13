@@ -1,0 +1,380 @@
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<div class='container-fluid'>
+	{{notification-container position="top-right"}}
+	<div class="row border-bottom">
+		<div class="col-4"><p>USERNAME{{name11}}<span>{{name}}</span><></p></div>
+		<div class="col-8"><a href="/chatlogout" id="top-button">Logout</a><a id="top-button" onclick{{action 'loadUserProfile'}}>Edit Profile</a><a id="top-button" onclick{{action 'loadSearch' 1}}>Search</a><a id="top-button" onclick={{action 'loadBroadCast'}}>BroadCast</a><a id="top-button">{{#link-to "userchart"}}Messages{{/link-to}}</a><a id="top-button">{{#link-to "graphgen"}}Graph{{/link-to}}</a></div>   
+	</div>
+	
+	<div class="searcher" id="searcher">
+		<span id="remove-searcher" onclick={{action "loadSearch" 0}}>X</span>
+		<div > 
+			<input id="search" type="text" placeholder="Search Messages" onkeyup={{action "search"}} autocomplete="off" />
+		</div>
+		<div id="suggestion" onclick={{action "loadMessage"}}>
+		</div>
+	</div>
+	
+	<div class="row">
+		<div class="col-2 border-right">
+			<div class="row border-bottom">
+				<div class="row">
+					<div class="col">
+						<input type="text" id="useractsearcherinput" onfocus={{action 'loadactusersearch' 0}} onkeyup={{action 'useractsearch'}} placeholder="Search users...">
+					</div>
+				</div>
+
+				<div class="col" id="actusrs">
+					<p id="user">Active Now</p>
+					<ul>	
+					{{#each active as |ats|}}
+						<li><a onclick={{action 'loadHistoryMessages' ats}}>{{ats}}<div class="online" id = {{ats}}></div></a></li>
+					{{/each}}
+					</ul>
+				</div>
+				
+				<div class="col" id="actsearcher">
+					<ul>	
+					{{#each actsearcher as |actsrch|}}
+						<li><a onclick={{action 'loadHistoryMessages' actsrch}}>{{actsrch}}<div class="online" id = {{actsrch}}></div></a></li>
+					{{/each}}
+					</ul>
+				</div>
+			</div>
+			
+			<div class="row border-bottom">
+				<div class="row">
+					<div class="col">
+						<input type="text" id="usersearcherinput" onfocus={{action 'loadusersearch' 0}} onkeyup={{action 'usersearch'}} placeholder="Search users...">
+					</div>
+				</div>
+				
+				<div class="col" id="usersearcher">
+					<ul>	
+					{{#each searcher as |srch|}}
+						<li><a onclick={{action 'loadHistoryMessages' srch}}>{{srch}}<div class="online" id = {{srch}}></div></a></li>
+					{{/each}}
+					</ul>
+				</div>
+				
+				<div class="col" id="allusers">
+					<ul>	
+					{{#each inactive as |inats|}}
+						<li><a onclick={{action 'loadHistoryMessages' inats}}>{{inats}}<div class="online" id = {{inats}}></div></a></li>
+					{{/each}}
+					</ul>
+				</div>
+			</div>
+		
+			<div class="row">
+				<div class="col-10">
+					<p id="user">YOUR GROUPS</p>
+				</div>
+				<div class="col-2">
+					<img id="creategroup" onclick={{action 'loadCreateGroup'}} src="images/create_group.png" height="38" width="38">
+				</div>
+			</div>
+			
+			<div class="row" id="createGroupDiv">
+				<div class="col">
+					<input type= "text" id="groupName" onKeyup={{action 'createGroup'}} placeholder="Enter GroupName"/>
+				</div>
+				<div class="col">
+					<span id="grpexits" ></span>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col">
+					<ul>
+					{{#each groupList as |grplist|}}
+						<li><span onclick={{action 'loadGroup' grplist}}>{{grplist}}</span><span class="remove" onclick = {{action 'removeMe' grplist}}>X</span></li>
+					{{/each}}
+					</ul>
+				</div>
+			</div>	
+		</div>
+		
+		<div class="col-10">
+			<div class="row">
+				<div class="col-4 border-right">
+					<div class="row">
+						<div class="col-8"><p><span>{{currname0}}</span><span id="typing">{{typers0}}</span></p></div>
+						<div class="col-4" onclick={{action 'loadinfo' 0}}><img id="drop0" src="images/dropdown.png" height="18" width="18"></div>
+					</div>
+					<div class="user-info" id="info0">
+						<div class="row">
+							<div class="col">{{profile}}</div>
+						</div>
+						<div class="row">
+							<div class="col"><img src="images/name.png" height="24" width="24">{{currname0}}</div>
+						</div>	 
+						<div class="row">
+							<div class="col" ><img  src="images/birthday.png" height="24" width="24">{{dob0}}</div>
+						</div>
+						<div class="row">
+							<div class="col"><img src="images/location.png" height="24" width="24">{{place0}}</div>
+						</div>
+						<div class="row">
+							<div class="col-6"><button id="block0" onclick={{action 'blockChanger' 0}}></button></div>
+							<div class="col-6"><button class="btn btn-primary" onclick={{action 'exportMessage' 0}}>Export</button></div>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col">
+							<div id="text-box0" class="cus-textarea" onscroll={{action 'test'}} onclick={{action 'forward'}}>
+							</div>  
+						</div>
+					</div>
+					
+					<div class="row" id="send0">
+						<div class="col-8"><input id="msg0" type="text"  autocomplete="off" onfocus={{action "typing" 0}} onblur={{action "stoptyping"}} onKeyup={{action "enter"}}>
+						</div>
+						<div class="col-2">
+							<label for="file-upload"  onclick={{action 'setcurrent' 0}}><img src="images/img_sharing.png" height="24" width="24"></label>
+							<input id="file-upload" onchange={{action "loadUpload"}} accept="image/*" type="file">
+						</div>
+						<div class="col-2">
+							<label for="video-upload"  onclick={{action 'setcurrent' 0}}><img src="images/upload_video.png" height="24" width="24"></label>
+							<input id="video-upload" multiple="true" onchange={{action "loadUploadVideo"}} accept="video/*" type="file">
+						</div>
+					</div>
+					<div class="row" id="pre0">
+						<div class="col">
+							<img id="preview0" src="" width="180" height="100">
+							<input id="preview-input0" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} placeholder="Add Caption"/>
+							<button id="imgsend" class="btn btn-success" onclick={{action "uploadImage"}}>Send</button>
+						</div>
+					</div>	 
+					<div class="row" id="prevideo0">
+						<div class="col">
+							<video id="preview-video0" width="180" height="100" controls></video>
+							<input id="preview-input-video0" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} placeholder="Add Caption"/>
+							<button id="vidsend" class="btn btn-success" onclick={{action "uploadVideo"}}>Send</button>
+						</div>
+					</div>
+					
+				</div>
+			
+				<div class="col-4 border-right">
+					<div class="row">
+						<div class="col-6"><p><span>{{currname1}}</span><span id="typing">{{typers1}}</span></p></div>
+						<div class="col-4" onclick={{action 'loadinfo' 1}}><img id="drop1" src="images/dropdown.png" height="18" width="18"></div>
+					</div>
+					<div class="user-info" id="info1">
+						<div class="row">
+							<div class="col">{{profile}}</div>
+						</div>
+						<div class="row">
+							<div class="col"><img src="images/name.png" height="24" width="24">{{currname1}}</div>
+						</div>	 
+						<div class="row">
+							<div class="col"><img  src="images/birthday.png" height="24" width="24">{{dob1}}</div>
+						</div>
+						<div class="row">
+							<div class="col"><img src="images/location.png" height="24" width="24">{{place1}}</div>
+						</div>
+						<div class="row">
+							<div class="col-6"><button id="block1" onclick={{action 'blockChanger' 1}}></button></div>
+							<div class="col-6"><button class="btn btn-primary" onclick={{action 'exportMessage' 1}}>Export</button></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div id="text-box1" class="cus-textarea" onscroll={{action 'test'}} onclick={{action 'forward'}}>
+							</div>  
+						</div>
+					</div>
+					<div class="row" id="send1">
+						<div class="col-8"><input id="msg1" type="text"  autocomplete="off" onfocus={{action "typing" 1}} onblur={{action "stoptyping"}} onKeyup={{action "enter"}}>
+						</div>
+						<div class="col-2">
+							<label for="file-upload" onclick={{action 'setcurrent' 1}}><img src="images/img_sharing.png" height="24" width="24"></label>
+							<input id="file-upload" onchange={{action "loadUpload"}}  accept="image/*" type="file">
+						</div>
+						<div class="col-2">
+							<label for="video-upload" onclick={{action 'setcurrent' 1}}><img src="images/upload_video.png" height="24" width="24"></label>
+							<input id="video-upload" multiple="true" onchange={{action "loadUploadVideo"}}  accept="video/*" type="file">
+						</div>
+					</div>
+					<div class="row" id="pre1">
+						<div class="col">
+							<img id="preview1" src="" width="180" height="100">
+							<input id="preview-input1" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} placeholder="Add Caption"/>
+							<button id="imgsend1" class="btn btn-success" onclick={{action "uploadImage"}}>Send</button>
+						</div>
+					</div>	 
+					<div class="row" id="prevideo1">
+						<div class="col">
+							<video id="preview-video1" width="180" height="100" controls></video>
+							<input id="preview-input-video1" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} placeholder="Add Caption"/>
+							<button id="vidsend1" class="btn btn-success" onclick={{action "uploadVideo"}}>Send</button>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-4 border-right">
+					<div class="row">
+						<div class="col-8"><p><span>{{currname2}}</span><span id="typing">{{typers2}}</span></p></div>
+						<div class="col-4" onclick={{action 'loadinfo' 2}}><img id="drop2" src="images/dropdown.png" height="18" width="18"></div>
+					</div>
+					<div class="user-info" id="info2">
+						<div class="row">
+							<div class="col" >{{profile}}</div>
+						</div>
+						<div class="row">
+							<div class="col" ><img  src="images/name.png" height="24" width="24">{{currname2}}</div>
+						</div>	 
+						<div class="row">
+							<div class="col"><img src="images/birthday.png" height="24" width="24">{{dob2}}</div>
+						</div>
+						<div class="row">
+							<div class="col"><img src="images/location.png" height="24" width="24">{{place2}}</div>
+						</div>
+						<div class="row">
+							<div class="col-6"><button id="block2" onclick={{action 'blockChanger' 2}}></button></div>
+							<div class="col-6"><button class="btn btn-primary" onclick={{action 'exportMessage' 2}}>Export</button></div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col">
+							<div id="text-box2" class="cus-textarea" onscroll={{action 'test'}} onclick={{action 'forward'}}>
+							</div>  
+						</div>
+					</div>
+					<div class="row" id="send2">
+						<div class="col-8"><input id="msg2" type="text"  autocomplete="off" onfocus={{action "typing" 2}} onblur={{action "stoptyping"}} onKeyup={{action "enter"}}>
+						</div>
+						<div class="col-2">
+							<label for="file-upload" onclick={{action 'setcurrent' 2}}><img src="images/img_sharing.png" height="24" width="24"></label>
+							<input id="file-upload" onchange={{action "loadUpload"}} accept="image/*" type="file">
+						</div>
+						<div class="col-2">
+							<label for="video-upload" onclick={{action 'setcurrent' 2}}><img src="images/upload_video.png" height="24" width="24"></label>
+							<input id="video-upload" multiple="true" onchange={{action "loadUploadVideo"}}  accept="video/*" type="file">
+						</div>
+					</div>
+					<div class="row" id="pre2">
+						<div class="col">
+							<img id="preview2" src="" width="180" height="100">
+							<input id="preview-input2" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} placeholder="Add Caption"/>
+							<button id="imgsend2" class="btn btn-success" onclick={{action "uploadImage"}}>Send</button>
+						</div>
+					</div>	 
+					<div class="row" id="prevideo2">
+						<div class="col">
+							<video id="preview-video2" width="180" height="100" controls></video>
+							<input id="preview-input-video2" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} placeholder="Add Caption"/>
+							<button id="vidsend2" class="btn btn-success" onclick={{action "uploadVideo"}}>Send</button>
+						</div>
+					</div>
+				
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="row justify-content-md-center">
+		<div class="col-4">
+			<div class="row border-top" id="forward">
+				<div class="row" class="proclass">
+					<div class="col" style="font-size:16px;font-weight:bold;padding:10px;">Forward to...<span onclick={{action 'removeForward'}} class="remove">X</span></div>
+				</div>
+				
+				<div class="row">
+					<div class="col">
+						<ul>	
+						{{#each forwardusers as |usrs|}}
+							<li><a onclick={{action 'addforward' usrs}}>{{usrs}}</a></li>
+						{{/each}}
+						</ul>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col">
+							<button class="btn btn-success" id="frd-btn" onclick={{action 'sendForward'}}>Forward</button>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col">
+						<p id="recipients">Recipients:</p>
+						<ul>	
+						{{#each selectedforwardusers as |frwdusers|}}
+							<p id="selectedusers">{{frwdusers}};</p>
+						{{/each}}
+						</ul>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row border-top" id="broadcast">
+				<div class="row" class="proclass">
+					<div class="col" style="font-size:16px;font-weight:bold;padding:10px;">BROADCAST<span onclick={{action 'removeBroadcast'}} class="remove">X</span></div>
+				</div>
+				
+				<div class="row">
+					<div class="col">
+						<ul>	
+						{{#each broadcastusers as |users|}}
+							<li><a onclick={{action 'addUsersBroad' users}}>{{users}}</a></li>
+						{{/each}}
+						</ul>
+					</div>
+				</div>
+				
+				<div class="row" id="broadsend">
+					<div class="col"><input type="text" id="broadcastmsg" onKeyup={{action "broadcast"}}/>
+						<label for="file-broad-upload" ><img src="images/img_sharing.png" height="16" width="18"></label>
+						<input id="file-broad-upload" multiple="true" onchange={{action "loadBroadImage"}} accept="image/*" type="file"/>
+						<label for="video-broad-upload"><img src="images/upload_video.png" height="16" width="18"></label>
+						<input id="video-broad-upload" multiple="true" onchange={{action "uploadBroadVideoFile"}} accept="video/*" type="file"/>
+					</div>
+				</div>
+				
+				<div class="row" id="pre-broad">
+					<div class="col">
+						<img id="broad-preview" src="" width="180" height="100">
+						<input id="broad-preview-input" type="text"  autocomplete="off" placeholder="Add Caption"/>
+						<button id="imgsend" class="btn btn-success" onclick={{action "uploadBroadImage"}}>Send</button>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col">
+						<p id="recipients">Recipients:</p>
+						<ul>	
+						{{#each selectBroadUsers as |broadusers|}}
+							<p id="selectedusers">{{broadusers}};</p>
+						{{/each}}
+						</ul>
+						<p id="warn">No Recipients selected!<span onclick={{action 'removeWarn'}} id="removewarn">X</span></p>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="row border-top" id="profiledetial">
+				<div class="row" class="proclass">
+					<div class="col" style="font-size:16px;font-weight:bold;padding:10px;">YOUR PROFILE<span onclick={{action 'removeUserProfile'}} class="remove">X</span></div>
+				</div>
+				
+				<div class="row" class="proclass">
+					<div class="col"><input type="date" id="dobuser"/></div>
+				</div>
+				
+				<div class="row" class="proclass">
+					<div class="col"><input type="text" id="placeuser" placeholder="Place"/></div>
+				</div>
+			
+				<div class="row" class="proclass">
+					<div class="col"><button id="updateprobutton" class="btn btn-success" onclick={{action 'updateUserProfile'}}>Save</button></div>
+				</div>
+			</div>
+		
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Chatapp</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    {{content-for "head"}}
+	<link rel="shortcut icon" href="#">
+    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/vendor.css">
+    <link integrity="" rel="stylesheet" href="{{rootURL}}assets/chatapp.css">
+
+    {{content-for "head-footer"}}
+  </head>
+  <body>
+    {{content-for "body"}}
+
+    <script src="{{rootURL}}assets/vendor.js"></script>
+    <script src="{{rootURL}}assets/chatapp.js"></script>
+
+    {{content-for "body-footer"}}
+	<script>
+	function loadImage(name) {
+		var xhttp1 = new XMLHttpRequest();
+		xhttp1.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				var result = this.responseText;
+				var img = document.createElement("img");
+				img.src = result;
+				img.width = 290;
+				img.height = 180;
+				var maindiv = document.getElementById(name);
+				maindiv.innerHTML = '';
+				maindiv.style.width = 300;
+				maindiv.style.height = 190;
+				maindiv.style.cursor = "context-menu";
+				maindiv.appendChild(img);
+			} 
+		};
+		xhttp1.open("POST", "imageserverember", true);
+		xhttp1.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		xhttp1.send("filename=" + name);
+	}
+	</script>
+  </body>
+</html>

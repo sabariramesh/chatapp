@@ -1,0 +1,94 @@
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<div class='container'>
+	<div class="row border-bottom">
+		<div class="col-8"><p>USERNAME<span>{{name}}</span><span id="admin"></span></p></div>
+		
+		<div class="col-4"><p id="grp">{{#link-to "chat"}}Back{{/link-to}}</p></div>
+	</div>
+
+	<div class="row">
+		<div class="col-4 border-right">
+			<div class="row">
+				<div class="col-4"><button class="btn btn-success" id="adduser" onclick={{action 'addNewUser'}}>Add User</button></div>
+				<div class="col-4"><button class="btn btn-success" id="makeadmin" onclick={{action 'makeAdmin'}}>Make Admin</button></div>
+				<div class="col-4"><button class="btn btn-danger" id="deletegroup" onclick={{action 'deleteGroup'}}>Delete Group</button></div>
+			</div>
+			
+			<div class="row">
+				<div class="col"><p id="user">PEOPLE</p></div>
+			</div>
+			
+			<div class="row">
+				<div class="col">
+					<ul>	
+					{{#each groupMembersList as |usrnames|}}
+						<li><span onclick={{action 'grpmem' usrnames}}>{{usrnames}}</span>{{#if adminCheck}}<span class="remove" onclick = {{action 'removeDemo' usrnames}}>X</span>{{else}}<span></span>{{/if}}</li>
+					{{/each}}
+					</ul>
+				</div>	
+			</div>	
+			
+			<div class="row">			
+				<div class="col">
+					<div class="row">
+						<div class="col-10"><span id='temp' style="color:red;font-size:12px;display:none;">click to add user</span></div>
+						<div class="col-2"><span id='temp1' style="color:red;font-size:12px;display:none;color:white;background-color:red;cursor:pointer;text-align:center;" onclick={{action 'cancelAddUsers'}}>X</span></div>
+					</div>
+					<ul>	
+					{{#each addnNewUserList as |newusers|}}
+						<li id="onlines"> <a onclick={{action 'confirmAddUser' newusers}}>{{newusers}}</a></li>
+					{{/each}}
+					</ul>
+					
+					<ul>	
+					{{#each makeAdminList as |mkadn|}}
+						<li id="onlines"> <a onclick={{action 'confirmMakeAdmin' mkadn}}>{{mkadn}}</a></li>
+					{{/each}}
+					</ul>
+					
+				</div>	
+			</div>
+			
+		</div>
+		
+		<div class="col-6 border-right">
+			<div class="row">
+				<div class="col"><p><span>{{currentGroupName}}</span><span id="grouptyping"></span></p></div>
+			</div>
+		
+			<div class="row">
+				<div class="col">
+					<div id="text-box-group" class="cus-textarea" onscroll={{action 'loadLazyHistory'}}> 
+					</div>
+				</div>
+			</div>
+			<div class="row" id="send">
+				<div class="col-8"><input id="msg" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} onKeyup={{action "enter"}}/>
+					<label for="file-group-upload" class="custom-file-upload"><img src="images/img_sharing.png" height="24" width="24"></label>
+					<input id="file-group-upload" onchange={{action "loadGroupImage"}} accept="image/*" type="file"/>
+					<label for="group-video-upload" class="custom-file-upload"><img src="images/upload_video.png" height="24" width="24"></label>
+					<input id="group-video-upload" onchange={{action "loadGroupVideo"}} accept="video/*" type="file"/>
+				</div>
+			</div>
+			
+			<div class="row" id="pre">
+				<div class="col">
+					<img id="preview" src="" width="180" height="100">
+					<input id="preview-input" type="text"  autocomplete="off" onfocus={{action "typing"}} onblur={{action "stoptyping"}} placeholder="Add Caption"/>
+					<button id="imgsend" class="btn btn-success" onclick={{action "uploadGroupImage"}}>Send</button>
+				</div>
+			</div>
+			<div class="row" id="prevideo">
+						<div class="col">
+							<video id="preview-video" width="180" height="100" controls></video>
+							<input id="preview-input-video" type="text"  placeholder="Add Caption"/>
+							<button id="vidsend" class="btn btn-success" onclick={{action "uploadGroupVideo"}}>Send</button>
+						</div>
+					</div>
+		</div>
+
+		<div class="col-2">
+			
+		</div>
+	</div>
+</div>

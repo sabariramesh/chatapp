@@ -1,0 +1,70 @@
+<link rel="stylesheet" href="css/bootstrap.min.css">
+{{yield}}
+<div class="row">
+	<div class="col">
+		{{notification-container position="top-right"}}
+		<div class="row">
+			<div class="col">
+				<label for="file-upload" >Choose CSV file:<img src="images/doc.png" height="24" width="24"></label>
+				<input id="file-upload" onchange={{action "loadUpload"}} type="file">
+			</div>
+		</div>
+		
+		<div class="row" id="base">
+			<div class="row">
+				<div class="col-6">
+					<div style="float:right;">
+					<label for="title" >Title:</label>
+					<input type="text" id="title" style="width:150px;">
+					</div>
+				</div>
+				<div class="col-6">
+					<label for="baselabel" >Choose Label:</label>
+					<select id="baselabel">
+					</select>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-6">
+					<div style="float:right;">
+					<label for="stacked">Stacked:</label>
+					<input type="checkbox" id="stacked">
+					</div>
+				</div>
+				<div class="col-6">
+					<button class="btn btn-primary" onclick={{action 'loadGroups'}}>Next</button>
+				</div>
+			</div>
+		</div>
+		
+		<div class="row" id="groups">
+			<div class="col-6">
+				<label for="group">Choose group:</label>
+				<select id="group">
+				</select>
+			</div>
+			<div class="col-2">
+			<label for="myColor">Choose BackgroundColor:</label>
+				<input type="color" id="myColor">
+			</div>	
+			<div class="col-4">
+				<button class="btn btn-success" onclick={{action 'addgroups'}}>Add</button>
+			</div>	
+		</div>
+		    
+		
+		<div class="row">
+			<div class="col-6" id="create">
+				<button class="btn btn-success" onclick={{action 'generateGraph'}}>Create</button>
+			</div>
+			<div class="col-6" id="update">
+				<button class="btn btn-success" onclick={{action 'loadUpdate'}}>Update</button>
+			</div>
+		</div>
+	
+	</div>
+</div>
+
+<div class="chart-container">
+		<canvas id="myChart"></canvas>
+	</div>
