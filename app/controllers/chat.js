@@ -1286,59 +1286,72 @@ export default Controller.extend({
 			if(val != 'suggestion' && val != '') {
 				var name = event.srcElement.childNodes[1].innerText;
 				if(name.startsWith('You')) {
+					console.log('you');
 					var v = name.split(' ');
 					if(this.get('currname0') == v[2]) {
+						console.log('you currname0');
 						no = 0;
 					} else if(this.get('currname1') == v[2]) {
+						console.log('you currname1');
 						no = 1;
 					} else if(this.get('currname2') == v[2]) {
+						console.log('you currname2');
 						no = 2;	
 					} else if(this.get('lastname') == -1) {
+						console.log('you lastname');
 						no = 0;
 						this.set('lastname',1);
 						this.set('currname0',v[2]);
 						this.set('typers0','');
 					} else {
+						console.log('you lastname ellse');
 						var nos = this.get('lastname');
 						if(nos == 2) {
 							no = 0;
 							this.set('lastname',no);
 						} else {
-							no = no + 1;
+							no = nos + 1;
 							this.set('lastname',no);
 						}
-						this.set('currname'+no,person);
+						this.set('currname'+no,v[2]);
 						this.set('typers'+no,'');
 					}
 				} else {
 					if(this.get('currname0') == name) {
+						console.log(' currname0');
 						no = 0;
 					} else if(this.get('currname1') == name) {
+						console.log(' currname1');
 						no = 1;
 					} else if(this.get('currname2') == name) {
+						console.log(' currname2');
 						no = 2;	
 					} else if(this.get('lastname') == -1) {
+						console.log(' lastname');
 						no = 0;
 						this.set('lastname',1);
 						this.set('currname0',name);
 						this.set('typers0','');
 					} else {
+						console.log('lastname ellse');
 						var nos = this.get('lastname');
 						if(nos == 2) {
 							no = 0;
 							this.set('lastname',no);
 						} else {
-							no = no + 1;
+							console.log('no = nos+ 1 elase lastname');
+							no = nos + 1;
 							this.set('lastname',no);
 						}
-						this.set('currname'+no,person);
+						this.set('currname'+no,name);
 						this.set('typers'+no,'');
 					}
 				}
+				console.log(this.get('lastname'));
+				console.log(no);
 				var send = 'send' + no;
 				var drop = 'drop' + no;
 				var textbox = 'text-box'+no;
-				console.log(textbox);
 			var person = this.get('currname'+no);
 				this.send('loadSearch',0);
 				var s = this;

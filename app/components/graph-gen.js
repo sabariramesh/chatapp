@@ -8,193 +8,328 @@ export default Component.extend({
 		this.get('notifications').setDefaultAutoClear(true);
 		this.get('notifications').setDefaultClearDuration(1200);
     },
+	test:0,
+	Labels:[],
+	randomcolor:'',
+	randomcolora:'',
+	Groups:[],
+	Values:[],
 	filedata: [],
-	notifications: Ember.inject.service('notification-messages'),
-	datasets:[],
-	yAxes:[],
-	myChart:'',
-	yAxesID:'',
-	stacked:false,
-	options:{
-		type: 'bar',
-		data: {
-			labels: [],
-			datasets: []
-		},
-		options: {
-			title: {
-				display:true,
-				text: ''
-			},
-			scales: {
-				yAxes: [],
-				xAxes: [{stacked:false}]
-			}
-		}
-	},
+	notifications: Ember.inject.service('notification-messages'),	
 	actions: {
 		loadUpload: function(event) {
 			var file = event.target.files[0];
 			var filereader = new FileReader();
 			var s = this;
 			filereader.onload = () => {
+				if(this.get('Groups').length > 0) {
+					this.get('Groups').removeAt(0,this.get('Groups').length);
+				}
+				if(this.get('Labels').length > 0) {
+					this.get('Labels').removeAt(0,this.get('Labels').length);
+				}
+				if(this.get('Values').length > 0) {
+					this.get('Values').removeAt(0,this.get('Values').length);
+				} 
+				$('#Labels').empty();
+				$('#Groups').empty();
+				$('#Values').empty();
+				s.$('<option selected value="select">select</option>').appendTo('#Labels');
+				s.$('<option selected value="select">select</option>').appendTo('#Groups');
+				s.$('<option selected value="select">select</option>').appendTo('#Values');
 				var content = filereader.result;
 				s.send('convertToJson',content);
-				console.log(content);
-				$('#baselabel').empty();
-				document.getElementById('title').value = '';
-				var header = Object.keys(s.get('filedata')[0]);
-				for (var i = 0;i < header.length;i++) {
-					s.$('<option value="'+ header[i] +'">' + header[i] + '</option>').appendTo('#baselabel');
+				if(this.get('test') == 1) {
+					var header = Object.keys(s.get('filedata')[0]);
+					for (var i = 0;i < header.length;i++) {
+						s.$('<option value="'+ header[i] +'">' + header[i] + '</option>').appendTo('#Labels');
+						s.$('<option value="'+ header[i] +'">' + header[i] + '</option>').appendTo('#Groups');
+						s.$('<option value="'+ header[i] +'">' + header[i] + '</option>').appendTo('#Values');
+					}	
+					s.$('<option value="c">Count</option>').appendTo('#Values');
+					document.getElementById('base').style.display = "block";
+					document.getElementById('show').style.display = "block";
 				}
-				document.getElementById('base').style.display = "block";
 			}
 			filereader.readAsText(file);
-		},
-		loadGroups: function() {
-			var title = document.getElementById('title').value;
-			this.set('options.options.title.text',title);
-			var baseLabel = document.getElementById("baselabel");
-			var baseLabelValue = baseLabel.options[baseLabel.selectedIndex].value;
-			$('#group').empty();
-			var t = this.get('filedata').objectAt(0);
-			if(isNaN(t[baseLabelValue]) && title != '') {
-				var header = Object.keys(this.get('filedata')[0]);
-				for (var i = 0;i < header.length;i++) {
-					if(header[i] != baseLabelValue) {
-						$('<option value="'+ header[i] +'">' + header[i] + '</option>').appendTo('#group');
-					}
-				}
-				
-				for(var i = 0;i < this.get('filedata').length;i++) {
-					var t = this.get('filedata')[i];
-					this.get('options').data.labels.push(t[baseLabelValue]);
-				}
-				if(document.getElementById('stacked').checked) {
-					this.set('stacked',true);
-					this.get('options').options.scales.xAxes.objectAt(0).stacked = true;
-					this.set('yAxesID','1');
-				}
-				document.getElementById('groups').style.display = "block";
-			} else {
-				alert("Invalid Details...");
-			}	
+			
 		},
 		
-		addgroups:function() {
-			var group = document.getElementById("group");
-			var groupName = group.options[group.selectedIndex].value;
-			var temp = JSON.parse('{"label":"","yAxisID":"","data":[],"backgroundColor":""}');
-			temp.label = groupName;
-			$("#group option[value= " +groupName + "]").remove();
-			temp.backgroundColor = document.getElementById('myColor').value;
-			if(this.get('stacked') == true) {
-				temp.yAxisID = this.get('yAxesID');
-			} else {
-				temp.yAxisID = groupName;
-			}	
-			for(var i = 0;i < this.get('filedata').length;i++) {
-				var t = this.get('filedata')[i];
-				temp.data.push(t[groupName]);
-			}
-			this.get('datasets').push(temp);
-			var tempy = JSON.parse('{"stacked":false,"id":"","position":""}');
-			if(this.get('stacked') == true) {
-				tempy.stacked = true;
-				tempy.id = this.get('yAxesID');
-			} else {
-				tempy.stacked = false;
-				tempy.id = groupName;
-			}
-			if(this.get('yAxes').length == 0) {
-				tempy.position = 'left';
-			} else if (this.get('stacked') == true) {
-				tempy.position = 'left';
-			} else {
-				tempy.position = 'right';
-			}
-			this.get('notifications').info(groupName + ' has been added',{
+		add: function(idName) {
+			var label = document.getElementById(idName);
+			var baseLabelValue = label.options[label.selectedIndex].value;
+			if(baseLabelValue != 'select') {	
+				this.get('notifications').success(baseLabelValue + ' has been added',{
 					autoClear: true
 				});
-			this.get('yAxes').push(tempy);
-			console.log(this.get('yAxes'));
-			console.log(this.get('datasets'));
-			document.getElementById('create').style.display = 'block';
+				this.get(idName).pushObject(baseLabelValue);
+				$("#Labels option[value= " +baseLabelValue + "]").remove();
+				$("#Groups option[value= " +baseLabelValue + "]").remove();
+				$("#Values option[value= " +baseLabelValue + "]").remove();
+			}
 		},
 		
-		convertToJson: function(data) {
-			if(this.get('filedata').length > 0) {
-				this.get('filedata').removeAt(0,this.get('filedata').length);
-				console.log(11);
-				console.log(this.get('filedata'));
+		remove:function(labelName,idName) {
+			this.get(idName).removeObject(labelName);
+			this.get('notifications').error(labelName + ' has been removed',{
+					autoClear: true
+				});
+			$('<option value="'+ labelName +'">' + labelName + '</option>').appendTo('#Groups');
+			$('<option value="'+ labelName +'">' + labelName + '</option>').appendTo('#Labels');
+			$('<option value="'+ labelName +'">' + labelName + '</option>').appendTo('#Values');
+		},
+		validatePoints:function() {
+			var chartType = document.getElementById('chartype');
+			var chartTypeValue = chartType.options[chartType.selectedIndex].value;
+			if(chartTypeValue == 'Pie') {
+				this.send('pie');
+			} else {
+				this.send('generateGraph',chartTypeValue);
 			}
-			var record = data.split('\n');
-			var header = record[0].split(',');
-			console.log(record);
-			console.log(header);
-			for(var i = 1;i < record.length - 1;i++) {
-				var temp = '{';
-				var field = record[i].split(',');
-				for(var j = 0;j < field.length;j++) {
-					var value;
-					field[j] = field[j].trim();
-					header[j] = header[j].trim();
-					if(isNaN(field[j])) {
-						value = '"' + field[j] + '",'; 
+		},
+		generateGraph:function(charttype) {
+			var opt ={chart: {type: ''},title:{text: ''},xAxis: {categories: [],title:{text:''}},yAxis: {title: {text: ''}},series: [],plotOptions:{}};
+			if(charttype == 'stacked') {
+				opt.plotOptions = {column:{stacking:'normal'},dataLabels:{enabled:true}};
+				opt.chart.type = 'column';
+			} else {
+				opt.chart.type = charttype;
+			}
+			opt.title.text = document.getElementById('title').value;
+			var check = document.getElementById('avg').checked;
+			var valueitems = [];
+			var labelitems = [];
+			var labelName = this.get('Labels')[0];
+			var value = this.get('Values')[0];
+			opt.xAxis.text = labelName;
+			opt.yAxis.title.text = value;
+			if(this.get('Labels').length == 1 && this.get('Groups').length == 0 && this.get('Values').length == 1 && this.get('Values')[0] != 'c') {					
+				var avgcount = [];				
+				for(var i = 0;i < this.get('filedata').length;i++) {
+					var temp = this.get('filedata')[i];
+					var index = labelitems.indexOf(temp[labelName]);
+					if(index == -1) {
+						labelitems.push(temp[labelName]);
+						valueitems.push(parseInt(temp[value]));
+						avgcount.push(1);
+						
 					} else {
-						value = field[j] + ',';
+						valueitems[index] += parseInt(temp[value]);
+						avgcount[index] += 1;
 					}
-					temp = temp.concat('"' + header[j] + '":' + value);
 				}
-				temp = temp.substring(0,temp.length - 1);
-				temp = temp.concat('}');
-				this.get('filedata').push(JSON.parse(temp));
+				var temp = {name:'',data:[]};
+				temp.name = value;
+				opt.yAxis.title.text = value;
+				for(var i = 0;i < valueitems.length;i++) {
+					opt.xAxis.categories.push(labelitems[i]);
+					if(check == false) {
+						temp.data.push(valueitems[i]);
+					} else {
+						temp.data.push(valueitems[i]/avgcount[i]);
+					}
+				}
+				opt.series.push(temp);
+				$('#chartspace').highcharts(opt).highcharts();
+			} else if(this.get('Labels').length == 1 && this.get('Groups').length == 1 && this.get('Values').length == 1 && this.get('Values')[0] != 'c') {
+				var groupBy = this.get('Groups')[0];
+				var groupitems = []; 
+				var fulldata = [];
+				var mainset = [];
+				var avgcount = [];
+				for(var i = 0;i < this.get('filedata').length;i++) {
+					var temp = this.get('filedata')[i];
+					if(opt.xAxis.categories.indexOf(temp[labelName]) == -1) {
+						opt.xAxis.categories.push(temp[labelName]);
+						mainset.push(0);
+					}
+				}
+				console.log(mainset);
+				for(var i = 0;i < this.get('filedata').length;i++) {
+					var temp = this.get('filedata')[i];
+					if(groupitems.indexOf(temp[groupBy]) == -1) {
+						groupitems.push(temp[groupBy]);
+						fulldata.push(mainset.slice(0));
+						avgcount.push(mainset.slice(0));
+					}
+				}
+				for(var i = 0;i < groupitems.length;i++) {
+					for(var j = 0;j < opt.xAxis.categories.length;j++) {
+						for(var k = 0;k < this.get('filedata').length;k++) {
+							var temp = this.get('filedata')[k];
+							if(groupitems[i] == temp[groupBy] && opt.xAxis.categories[j] == temp[labelName]) {
+								fulldata[i][j] += parseInt(temp[value]);
+								avgcount[i][j] += 1;
+							}
+						}
+					}
+				}
+				if(check == true) {
+					for(var i = 0;i < groupitems.length;i++) {
+						for(var j = 0;j < opt.xAxis.categories.length;j++) {
+							fulldata[i][j] /= avgcount[i][j];
+						}
+					}
+				}
+				for(var i = 0;i < groupitems.length;i++) {
+					var temp = {name:'',data:[]};
+					temp.name = groupitems[i];
+					temp.data = Object.values(fulldata[i]);
+					opt.series.push(temp);
+				}
+				$('#chartspace').highcharts(opt).highcharts();
+			} else if(this.get('Labels').length == 1 && this.get('Groups').length == 1 && this.get('Values').length == 1 && this.get('Values')[0] == 'c') {	
+				var groupBy = this.get('Groups')[0];
+				opt.yAxis.title.text = groupBy + ' Count';
+				for(var i = 0;i < this.get('filedata').length;i++) {
+					var temp = this.get('filedata')[i];
+					var index = labelitems.indexOf(temp[labelName]);
+					if(index == -1) {
+						labelitems.push(temp[labelName]);
+						opt.xAxis.categories.push(temp[labelName]);
+						valueitems.push(1);
+					} else {
+						valueitems[index] += 1;
+					}
+				}
+				console.log(opt);
+				opt.series.push({name:groupBy,data:valueitems});
+				$('#chartspace').highcharts(opt).highcharts();
 			}
-			console.log(this.get('filedata'));
 		},
-		generateGraph: function() {
-			for(var i = 0;i < this.get('datasets').length;i++) {
-				this.get('options.data.datasets').push(this.get('datasets')[i]);
-				this.get('options.options.scales.yAxes').push(this.get('yAxes')[i]);
+		
+		pie:function() {
+			if(this.get('Labels').length == 1 && this.get('Groups').length == 0 && this.get('Values').length == 1 && this.get('Values')[0] != 'c') {
+				var opt = {chart: {type: 'pie'},title: {text: ''},plotOptions: {pie: { allowPointSelect: true,cursor: 'pointer', dataLabels: { enabled: true} }},series: [{name: '',colorByPoint: true,data: []}]};
+				opt.title.text = document.getElementById('title').value;	
+				var check = document.getElementById('avg').checked;				
+				var labelName = this.get('Labels')[0];
+				var labelitems = [];
+				var valueitems = [];
+				var avgcount = [];
+				var value = this.get('Values')[0];
+				opt.series[0].name = value;
+				for(var i = 0;i < this.get('filedata').length;i++) {
+					var temp = this.get('filedata')[i];
+					var index = labelitems.indexOf(temp[labelName]);
+					if(index == -1) {
+						labelitems.push(temp[labelName]);
+						valueitems.push(parseInt(temp[value]));
+						avgcount.push(1);
+					} else {
+						valueitems[index] += parseInt(temp[value]);
+						avgcount[index] += 1;
+					}
+				}
+				for(var i = 0;i < labelitems.length;i++) {
+					var temp = {name:'',y:0};
+					temp.name = labelitems[i];
+					if(check == false) {
+						temp.y = parseInt(valueitems[i]);
+					} else {
+						temp.y = parseInt(valueitems[i]/avgcount[i]);
+					}
+					opt.series[0].data.push(temp);
+				}
+				console.log(opt);
+				$('#chartspace').highcharts(opt).highcharts();
+			} else if(this.get('Labels').length == 1 && this.get('Groups').length == 1 && this.get('Values').length == 1 && this.get('Values')[0] != 'c') {
+				var opt = {chart: {type: 'pie'},title: {text: ''},series: [{name: '',data: [],size: '60%',dataLabels: {formatter: function () {return this.point.name;},color: '#0122ff',distance: -50}}, {name: '',data: [],size: '80%',innerSize: '76%',dataLabels: {formatter: function () {return this.y > 1 ? '<b>' + this.point.name + ':</b> ' +this.y: null;}},id: ''}]};
+				opt.title.text = document.getElementById('title').value;
+				var labelName = this.get('Labels')[0];
+				var groupBy = this.get('Groups')[0];  
+				var value = this.get('Values')[0];    
+				opt.series[0].name = groupBy;         
+				opt.series[1].name = value;           
+				opt.series[1].id = value;
+				var sideset = [];
+				var sidesettotalvalues = [];
+				var mainset = [];
+				var mainsetvalue = [];
+				for(var i = 0;i < this.get('filedata').length;i++) {
+					var temp = this.get('filedata')[i];
+					var index = mainset.indexOf(temp[groupBy]);
+					if(index == -1) {
+						mainset.push(temp[groupBy]);
+						mainsetvalue.push(parseInt(temp[value]));
+						var sidesetvalues = [];
+						var tempsideset = [];
+						tempsideset.push(temp[labelName]);
+						sideset.push(tempsideset);
+						sidesetvalues.push(parseInt(temp[value]));
+						sidesettotalvalues.push(sidesetvalues);
+					} else {
+						mainsetvalue[index] += parseInt(temp[value]);
+						var sideindex = sideset[index].indexOf(temp[labelName]);
+						if(sideindex == -1) {
+							sideset[index].push(temp[labelName]);
+							sidesettotalvalues[index].push(parseInt(temp[value]));
+						} else {
+							sidesettotalvalues[index][sideindex] += parseInt(temp[value]);
+						}
+					}					
+				}
+				console.log(sideset);
+				console.log(sidesettotalvalues);
+				for(var i = 0;i < mainset.length;i++) {
+					var temp = {name:'',y:0,color:''};
+					temp.name = mainset[i];
+					temp.y = mainsetvalue[i];
+					this.send('random_rgba');
+					temp.color = this.get('randomcolor');
+					for(var j = 0;j < sideset[i].length;j++) {
+						var sidetemp = {name:'',y:0,color:''};
+						sidetemp.name = sideset[i][j];
+						sidetemp.y = sidesettotalvalues[i][j];
+						sidetemp.color = this.get('randomcolora');
+						opt.series[1].data.push(sidetemp);
+					}
+					this.set('randomcolor','');
+					this.set('randomcolora','');
+					opt.series[0].data.push(temp);
+				}
+				console.log(opt);
+				$('#chartspace').highcharts(opt).highcharts();
 			}
-			var ctx = document.getElementById("myChart").getContext('2d');
-			if(this.get('myChart')) {
-				this.get('myChart').destroy();
-			}
-			console.log(this.get('options'));
-			var temp = $.extend(true,{},this.get('options'));
-			this.set('myChart',new Chart(ctx, temp));		
-			
-			document.getElementById('update').style.display = "block";
-			document.getElementById('create').style.display = "none";
 		},
-		loadUpdate: function() {
-			if(this.get('options.data.labels').length > 0) {
-				this.get('options.data.labels').removeAt(0,this.get('options.data.labels').length);
-			}
-			if(this.get('options.data.datasets').length > 0) {
-				this.get('options.data.datasets').removeAt(0,this.get('options.data.datasets').length);
-				this.get('options.options.scales.yAxes').removeAt(0,this.get('options.options.scales.yAxes').length);
-			}
-			if(this.get('datasets').length > 0) {
-				this.get('datasets').removeAt(0,this.get('datasets').length);
-			}
-			if(this.get('yAxes').length > 0) {
-				this.get('yAxes').removeAt(0,this.get('yAxes').length);
-			}
-			this.get('options.options.scales.xAxes').objectAt(0).stacked = false;
-			this.set('stacked',false);
-			this.set('yAxesID','');
-			document.getElementById('create').style.display = 'none';
-			document.getElementById('update').style.display = "none";
-			document.getElementById('base').style.display = "block";
-			document.getElementById('groups').style.display = "none";
-			document.getElementById('baselabel').innerHTML = '';
-			var header = Object.keys(this.get('filedata')[0]);
-			for (var i = 0;i < header.length;i++) {
-				$('<option value="'+ header[i] +'">' + header[i] + '</option>').appendTo('#baselabel');
-			}
-		}
+		random_rgba() {
+			var o = Math.round, r = Math.random, s = 255;
+			var temp =  o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s);
+			var rgb = 'rgb(' + temp + ')';
+			var rgba = 'rgba(' + temp + ',0.5)';
+			this.set('randomcolor',rgb);
+			this.set('randomcolora',rgba);
+		},
+		convertToJson: function(data) {
+			try{
+				if(this.get('filedata').length > 0) {
+					this.get('filedata').removeAt(0,this.get('filedata').length);
+				}
+				var record = data.split('\n');
+				var header = record[0].split(',');
+				console.log(record);
+				console.log(header);
+				for(var i = 1;i < record.length;i++) {
+					var temp = '{';
+					var field = record[i].split(',');
+					for(var j = 0;j < field.length;j++) {
+						var value;
+						field[j] = field[j].trim();
+						header[j] = header[j].trim();
+						value = '"' + field[j] + '",'; 
+						temp = temp.concat('"' + header[j] + '":' + value);
+					}
+					temp = temp.substring(0,temp.length - 1);
+					temp = temp.concat('}');
+					this.get('filedata').push(JSON.parse(temp));
+				}
+				console.log(this.get('filedata'));
+				this.set('test',1);
+			} catch(err) {
+				console.log(err);
+				alert("Invalid CSV file");
+				this.set('test',0);
+			}	
+		},
 	}
-	
 });

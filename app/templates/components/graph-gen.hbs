@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="css/bootstrap.min.css">
 {{yield}}
 <div class="row">
-	<div class="col">
+	<div class="col-6">
 		{{notification-container position="top-right"}}
 		<div class="row">
 			<div class="col">
@@ -9,62 +9,98 @@
 				<input id="file-upload" onchange={{action "loadUpload"}} type="file">
 			</div>
 		</div>
-		
-		<div class="row" id="base">
-			<div class="row">
-				<div class="col-6">
-					<div style="float:right;">
-					<label for="title" >Title:</label>
-					<input type="text" id="title" style="width:150px;">
-					</div>
-				</div>
-				<div class="col-6">
-					<label for="baselabel" >Choose Label:</label>
-					<select id="baselabel">
+		<div id="base">
+		<div class="row">
+			<div class="col">
+				<label for="chartype" >Chart type:</label>
+					<select id="chartype">
+						<option value="column">Bar</option>
+						<option value="stacked">Stacked Bar</option>
+						<option value="line">Line</option>
+						<option value="area">Area</option>
+						<option value="scatter">Scatter</option>
+						<option value="Pie">Pie</option>	
 					</select>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-6">
-					<div style="float:right;">
-					<label for="stacked">Stacked:</label>
-					<input type="checkbox" id="stacked">
-					</div>
-				</div>
-				<div class="col-6">
-					<button class="btn btn-primary" onclick={{action 'loadGroups'}}>Next</button>
-				</div>
 			</div>
 		</div>
-		
-		<div class="row" id="groups">
-			<div class="col-6">
-				<label for="group">Choose group:</label>
-				<select id="group">
-				</select>
-			</div>
-			<div class="col-2">
-			<label for="myColor">Choose BackgroundColor:</label>
-				<input type="color" id="myColor">
-			</div>	
-			<div class="col-4">
-				<button class="btn btn-success" onclick={{action 'addgroups'}}>Add</button>
-			</div>	
-		</div>
-		    
 		
 		<div class="row">
-			<div class="col-6" id="create">
-				<button class="btn btn-success" onclick={{action 'generateGraph'}}>Create</button>
-			</div>
-			<div class="col-6" id="update">
-				<button class="btn btn-success" onclick={{action 'loadUpdate'}}>Update</button>
+			<div class="col">
+				<label for="title" >Title</label>
+				<input type="text" id="title">
 			</div>
 		</div>
+		
+		<div class="row">
+			<div class="col">
+				<label for="Labels">Label</label>
+				<select id="Labels" onchange={{action 'add' 'Labels'}}>
+					<option selected value="select">select</option>
+				</select>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col">
+				<label for="Groups">Group by:</label>
+					<select id="Groups" onchange={{action 'add' 'Groups'}}>
+					<option selected value="select">select</option>
+					</select>
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col">
+				<label for="Values">Value:</label>
+				<select id="Values" onchange={{action 'add' 'Values'}}>
+				<option selected value="select">select</option>
+				<option value="c">Count</option>
+				</select>
+				<label for="avg">Average:</label>
+				<input style="margin:4px;" type="checkbox" id="avg">
+			</div>
+		</div>
+		
+		<div class="row">
+			<div class="col">
+				<button stye="margin:8px;" class="btn btn-success" onclick={{action 'validatePoints'}}>Create</button>
+			</div>
+		</div>	
+		</div>
+	</div>
 	
+	<div class="col-6">
+		<div id="show">	
+		<div class="row">
+			<div class="col-md-4">
+				<p id="user">Label</p>
+					<ul>	
+					{{#each Labels as |lab|}}
+						<li><a onclick={{action 'remove' lab 'Labels'}}>{{lab}}</a></li>
+					{{/each}}
+					</ul>
+			</div>
+			<div class="col-md-4">
+				<p id="user">Groups</p>
+					<ul>	
+					{{#each Groups as |gps|}}
+						<li><a onclick={{action 'remove' gps 'Groups'}}>{{gps}}</a></li>
+					{{/each}}
+					</ul>
+			</div>
+			<div class="col-md-4">
+				<p id="user">Value</p>
+					<ul>	
+					{{#each Values as |vls|}}
+						<li><a onclick={{action 'remove' vls 'Values'}}>{{vls}}</a></li>
+					{{/each}}
+					</ul>
+			</div>
+		</div>
+		</div>
 	</div>
 </div>
 
 <div class="chart-container">
-		<canvas id="myChart"></canvas>
+		<div id="chartspace" style="width:900px;height:400px;"></div>
 	</div>

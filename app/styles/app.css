@@ -10,6 +10,10 @@ body {
 input[type="file"] {
     display: none;
 }
+input[type="text"] {
+	margin:8px;
+	padding: 6px;
+}
 
 .inp {
 	padding: 8px;
@@ -22,13 +26,13 @@ input[type="file"] {
   height: 60vh;
   width: 70vw;
 }
-select {
+select{
 	border: 2px solid black;
-	padding: 8px;
-	margin: 4px;
+	padding: 6px;
+	margin: 8px;
 }
 
-#group-file,#group-video,#send0,#send1,#send2,#drop0,#drop1,#drop2,#send,#usersearcher,#actsearcher,#create,#update {
+#group-file,#group-video,#send0,#send1,#send2,#drop0,#drop1,#drop2,#send,#usersearcher,#actsearcher,#create,#update,#show {
 	display:none;
 }
 
