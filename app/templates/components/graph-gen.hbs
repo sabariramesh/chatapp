@@ -13,13 +13,15 @@
 		<div class="row">
 			<div class="col">
 				<label for="chartype" >Chart type:</label>
-					<select id="chartype">
+					<select id="chartype" onchange={{action "loaddateformat"}}>
 						<option value="column">Bar</option>
 						<option value="stacked">Stacked Bar</option>
 						<option value="line">Line</option>
 						<option value="area">Area</option>
 						<option value="scatter">Scatter</option>
-						<option value="Pie">Pie</option>	
+						<option value="Pie">Pie</option>
+						<option value="date1">Area(date)</option>
+						<option value="date2">Line(date)</option>
 					</select>
 			</div>
 		</div>
@@ -37,6 +39,35 @@
 				<select id="Labels" onchange={{action 'add' 'Labels'}}>
 					<option selected value="select">select</option>
 				</select>
+				<div id="datecheck">
+				<label for="dateformat">Date format</label>
+				<select id="dateformat">
+					<option selected value="select">select</option>
+					<option value="2">dd/MM/yyyy</option>
+					<option value="1">MM/dd/yyyy</option>
+					<option value="0">yyyy/MM/dd</option>
+					
+					<option value="2">dd/MM/yyyy HH:mm:ss</option>
+					<option value="1">MM/dd/yyyy HH:mm:ss</option>
+					<option value="0">yyyy/MM/dd HH:mm:ss</option>
+					
+					<option value="5">dd-MM-yyyy</option>
+					<option value="4">MM-dd-yyyy</option>
+					<option value="3">yyyy-MM-dd</option>
+					
+					<option value="5">dd-MM-yyyy HH:mm:ss</option>
+					<option value="4">MM-dd-yyyy HH:mm:ss</option>
+					<option value="3">yyyy-MM-dd HH:mm:ss</option>
+					
+					<option value="8">dd.MM.yyyy</option>
+					<option value="7">MM.dd.yyyy</option>
+					<option value="6">yyyy.MM.dd</option>
+					
+					<option value="8">dd.MM.yyyy HH:mm:ss</option>
+					<option value="7">MM.dd.yyyy HH:mm:ss</option>
+					<option value="6">yyyy.MM.dd HH:mm:ss</option>			
+				</select>
+				</div>
 			</div>
 		</div>
 		
@@ -100,7 +131,4 @@
 		</div>
 	</div>
 </div>
-
-<div class="chart-container">
-		<div id="chartspace" style="width:900px;height:400px;"></div>
-	</div>
+<div id="chartspace" style="width:1200px;height:400px;"></div>
